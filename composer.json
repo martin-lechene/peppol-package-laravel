@@ -15,13 +15,13 @@
     "authors": [
         {
             "name": "Peppol Package",
-            "homepage": "https://github.com/peppol-package/peppol-package-laravel"
+            "homepage": "https://github.com/martin-lechene/peppol-package-laravel"
         }
     ],
-    "homepage": "https://github.com/peppol-package/peppol-package-laravel",
+    "homepage": "https://github.com/martin-lechene/peppol-package-laravel",
     "support": {
-        "issues": "https://github.com/peppol-package/peppol-package-laravel/issues",
-        "source": "https://github.com/peppol-package/peppol-package-laravel"
+        "issues": "https://github.com/martin-lechene/peppol-package-laravel/issues",
+        "source": "https://github.com/martin-lechene/peppol-package-laravel"
     },
     "require": {
         "php": "^8.2",

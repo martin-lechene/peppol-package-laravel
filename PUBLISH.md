@@ -1,9 +1,9 @@
 # Publish on Packagist
 
-1. Create the GitHub repository `peppol-package/peppol-package-laravel` (or your org) and push this tree **only** (no `demo/` folder).
+1. Push this tree **only** (no `demo/` folder) — e.g. `https://github.com/martin-lechene/peppol-package-laravel`.
 
 2. On [packagist.org](https://packagist.org), submit the package using the Git URL:
-   `https://github.com/peppol-package/peppol-package-laravel.git`
+   `https://github.com/martin-lechene/peppol-package-laravel.git`
 
 3. Packagist reads `composer.json` → package name **`peppol-package/laravel-peppol-invoices`**.
 

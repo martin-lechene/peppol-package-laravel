@@ -67,8 +67,8 @@ Facade alias: `Invoice` (configurable via `config/app.php` if you remove auto-al
 
 ## Demo & docs
 
-- **Live demo (Laravel):** repository [`peppol-package-demo`](https://github.com/peppol-package/peppol-package-demo)
-- **Marketing / integration doc (static):** [`peppol-package-landingpage`](https://github.com/peppol-package/peppol-package-landingpage)
+- **Live demo (Laravel):** [`martin-lechene/peppol-package-demo`](https://github.com/martin-lechene/peppol-package-demo)
+- **Marketing / integration doc (static):** [`martin-lechene/peppol-package-landingpage`](https://github.com/martin-lechene/peppol-package-landingpage)
 
 ## Contributing
 
