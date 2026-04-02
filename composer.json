@@ -1,0 +1,59 @@
+{
+    "name": "peppol-package/laravel-peppol-invoices",
+    "description": "Laravel package for Peppol-oriented e-invoicing: UBL 2.1 skeleton, Belgian scheme hints, optional HTTP transmission to an Access Point.",
+    "keywords": [
+        "laravel",
+        "peppol",
+        "e-invoicing",
+        "ubl",
+        "en16931",
+        "belgium",
+        "electronic-invoice"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Peppol Package",
+            "homepage": "https://github.com/peppol-package/peppol-package-laravel"
+        }
+    ],
+    "homepage": "https://github.com/peppol-package/peppol-package-laravel",
+    "support": {
+        "issues": "https://github.com/peppol-package/peppol-package-laravel/issues",
+        "source": "https://github.com/peppol-package/peppol-package-laravel"
+    },
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.8",
+        "illuminate/support": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PeppolPackage\\EInvoices\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PeppolPackage\\EInvoices\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "PeppolPackage\\EInvoices\\InvoiceServiceProvider"
+            ],
+            "aliases": {
+                "Invoice": "PeppolPackage\\EInvoices\\Facades\\Invoice"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
