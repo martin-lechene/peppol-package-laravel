@@ -10,6 +10,8 @@ use PeppolPackage\EInvoices\Support\TransmissionResult;
 /**
  * @method static string generate(InvoiceModel $invoice, string $format = 'PEPPOL_BIS')
  * @method static TransmissionResult transmit(InvoiceModel $invoice)
+ * @method static \PeppolPackage\EInvoices\Validation\ValidationResult validate(string $xml)
+ * @method static string sign(string $xml, ?string $certificate = null, ?string $privateKey = null, ?string $keyPassword = null)
  *
  * @see InvoiceManager
  */

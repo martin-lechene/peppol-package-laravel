@@ -5,8 +5,11 @@ namespace PeppolPackage\EInvoices;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use PeppolPackage\EInvoices\Models\Invoice;
+use PeppolPackage\EInvoices\Signing\XadesSigner;
 use PeppolPackage\EInvoices\Support\PeppolBisXmlBuilder;
 use PeppolPackage\EInvoices\Support\TransmissionResult;
+use PeppolPackage\EInvoices\Validation\En16931Validator;
+use PeppolPackage\EInvoices\Validation\ValidationResult;
 
 class InvoiceManager
 {
@@ -20,6 +23,26 @@ class InvoiceManager
             'PEPPOL_BIS' => PeppolBisXmlBuilder::build($invoice),
             default => PeppolBisXmlBuilder::build($invoice),
         };
+    }
+
+    public function validate(string $xml): ValidationResult
+    {
+        $schema = $this->config['validation']['schema'] ?? null;
+
+        return (new En16931Validator($schema ?: null))->validate($xml);
+    }
+
+    public function sign(string $xml, ?string $certificate = null, ?string $privateKey = null, ?string $keyPassword = null): string
+    {
+        $certificate ??= $this->config['signature']['certificate'] ?? null;
+        $privateKey ??= $this->config['signature']['private_key'] ?? null;
+        $keyPassword ??= $this->config['signature']['key_password'] ?? null;
+
+        if ($certificate === null || $privateKey === null) {
+            throw new \InvalidArgumentException('Signing requires a certificate and private key.');
+        }
+
+        return (new XadesSigner($certificate, $privateKey, $keyPassword))->sign($xml);
     }
 
     public function transmit(Invoice $invoice): TransmissionResult
