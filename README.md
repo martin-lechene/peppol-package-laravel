@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/peppol-package/laravel-peppol-invoices/v)](https://packagist.org/packages/peppol-package/laravel-peppol-invoices)
 [![License](https://poser.pugx.org/peppol-package/laravel-peppol-invoices/license)](LICENSE)
 
-`peppol-package/laravel-peppol-invoices` is a Laravel package that helps you **model invoices**, generate a **Peppol BIS 3.0 / UBL 2.1 XML** skeleton, **validate** it against the **EN16931 / UBL 2.1 XSD** plus core cross-field business rules, **sign** it with an **XAdES-BES** enveloped signature, and optionally **POST** it to an Access Point HTTP endpoint. It does **not** replace a certified Peppol Access Point or a full XAdES-EPES/CiR catalogue from a certification body.
+`peppol-package/laravel-peppol-invoices` is a Laravel package that helps you **model invoices**, generate a **Peppol BIS 3.0 / UBL 2.1 XML** skeleton, **validate** it against the **EN16931 / UBL 2.1 XSD** plus core cross-field business rules, **sign** it with an **XAdES-EPES** enveloped signature, and optionally **POST** it to an Access Point HTTP endpoint. It does **not** replace a certified Peppol Access Point or a full XAdES-EPES/CiR catalogue from a certification body.
 
 ## Requirements
 
@@ -71,11 +71,19 @@ if (! $result->passes()) {
     }
 }
 
-// XAdES-BES enveloped signing (credentials from config or explicit)
+// XAdES-EPES enveloped signing (credentials from config or explicit).
+// The signature carries SigningTime, SigningCertificate, an explicit
+// SignaturePolicyIdentifier and a DataObjectFormat.
 $signed = Invoice::sign($xml, $certificatePem, $privateKeyPem, $keyPassword = null);
+
+// A signed document can still be validated: the XAdES envelope (wsu:Id +
+// UBLExtensions) is stripped first, then the XSD / business rules run.
+$signedOk = Invoice::validateSigned($signed);
 
 $result = Invoice::transmit($invoice); // stub or HTTP depending on config
 ```
+
+> **Note on the signature policy.** The default policy identifier is `urn:peppol:policy:authorization:1.0` with a placeholder description. For production Peppol compliance you must replace it with the policy of your Peppol access-point operator (see `XadesSigner` constructor arguments).
 
 The bundled UBL 2.1 schemas live in `resources/schemas/ubl2.1`; point `config('e-invoices.validation.schema')` at a custom XSD if needed.
 

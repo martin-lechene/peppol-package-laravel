@@ -32,6 +32,13 @@ class InvoiceManager
         return (new En16931Validator($schema ?: null))->validate($xml);
     }
 
+    public function validateSigned(string $xml): ValidationResult
+    {
+        $schema = $this->config['validation']['schema'] ?? null;
+
+        return (new En16931Validator($schema ?: null))->validateSigned($xml);
+    }
+
     public function sign(string $xml, ?string $certificate = null, ?string $privateKey = null, ?string $keyPassword = null): string
     {
         $certificate ??= $this->config['signature']['certificate'] ?? null;
