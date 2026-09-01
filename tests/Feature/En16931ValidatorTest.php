@@ -2,6 +2,7 @@
 
 namespace PeppolPackage\EInvoices\Tests\Feature;
 
+use PeppolPackage\EInvoices\Signing\XadesSigner;
 use PeppolPackage\EInvoices\Support\PeppolBisXmlBuilder;
 use PeppolPackage\EInvoices\Tests\TestCase;
 use PeppolPackage\EInvoices\Validation\En16931Validator;
@@ -78,7 +79,7 @@ XML;
     public function test_a_signed_document_still_validates_when_envelope_is_stripped(): void
     {
         $xml = file_get_contents(__DIR__.'/../fixtures/en16931-valid.xml');
-        $signed = (new \PeppolPackage\EInvoices\Signing\XadesSigner(
+        $signed = (new XadesSigner(
             $this->signerCertificate(),
             $this->signerPrivateKey()
         ))->sign($xml);
@@ -91,7 +92,7 @@ XML;
     public function test_validate_signed_strips_only_the_envelope_and_keeps_content_active(): void
     {
         $xml = file_get_contents(__DIR__.'/../fixtures/en16931-valid.xml');
-        $signed = (new \PeppolPackage\EInvoices\Signing\XadesSigner(
+        $signed = (new XadesSigner(
             $this->signerCertificate(),
             $this->signerPrivateKey()
         ))->sign($xml);
@@ -106,5 +107,28 @@ XML;
         // ... but the XAdES signature no longer verifies.
         $this->expectException(\Exception::class);
         $this->verifyXadesSignature($tampered);
+    }
+
+    public function test_mismatched_tax_subtotal_is_reported(): void
+    {
+        $xml = file_get_contents(__DIR__.'/../fixtures/en16931-valid.xml');
+
+        $document = new \DOMDocument;
+        $document->preserveWhiteSpace = false;
+        $document->loadXML($xml);
+
+        $xpath = new \DOMXPath($document);
+        $xpath->registerNamespace('i', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
+        $xpath->registerNamespace('cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+        $xpath->registerNamespace('cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+
+        $subtotalTax = $xpath->query('/i:Invoice/cac:TaxTotal/cac:TaxSubtotal/cbc:TaxAmount')->item(0);
+        $this->assertNotNull($subtotalTax);
+        $subtotalTax->textContent = '190.00';
+
+        $result = $this->validator()->validate($document->saveXML());
+
+        $this->assertTrue($result->fails());
+        $this->assertStringContainsString('BR-CO-08', $result->message());
     }
 }

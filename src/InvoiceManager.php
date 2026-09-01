@@ -75,7 +75,7 @@ class InvoiceManager
         }
 
         try {
-            $client = new Client(['timeout' => 60, 'http_errors' => false]);
+            $client = $this->httpClient();
             $response = $client->post($endpoint, [
                 'headers' => $headers,
                 'body' => $xml,
@@ -88,5 +88,10 @@ class InvoiceManager
         } catch (GuzzleException $e) {
             return new TransmissionResult(false, $e->getMessage());
         }
+    }
+
+    protected function httpClient(): Client
+    {
+        return new Client(['timeout' => 60, 'http_errors' => false]);
     }
 }

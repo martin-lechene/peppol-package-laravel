@@ -173,6 +173,19 @@ class En16931Validator
             $taxTotal += (float) $node->textContent;
         }
 
+        $declaredTax = 0.0;
+        $subtotalNodes = $xpath->query('/i:Invoice/cac:TaxTotal/cac:TaxSubtotal/cbc:TaxableAmount');
+        if ($subtotalNodes->length > 0) {
+            foreach ($xpath->query('/i:Invoice/cac:TaxTotal/cac:TaxSubtotal/cbc:TaxAmount') as $node) {
+                $declaredTax += (float) $node->textContent;
+            }
+
+            $declared = $xpath->query('/i:Invoice/cac:TaxTotal/cbc:TaxAmount')->item(0);
+            if ($declared !== null && abs($declaredTax - (float) $declared->textContent) > 0.005) {
+                $errors[] = 'BR-CO-08: TaxSubtotal amounts must sum to the TaxTotal TaxAmount.';
+            }
+        }
+
         if ($exclusive !== null && $inclusive !== null) {
             $expectedInclusive = $exclusive + $taxTotal;
             if (abs($expectedInclusive - $inclusive) > 0.005) {
